@@ -1,6 +1,7 @@
 import asyncio
 from playwright.async_api import async_playwright
 from twilio.rest import Client
+import os
 
 # --------------------------
 # CONFIG
@@ -8,11 +9,11 @@ from twilio.rest import Client
 PRODUCT_URL = "https://www.pokemoncenter.com/product/10-10186-109/pokemon-tcg-mega-evolution-phantasmal-flames-pokemon-center-elite-trainer-box"
 CHECK_INTERVAL = 30  # seconds
 
-# Twilio settings
-TWILIO_SID = "your_twilio_account_sid"
-TWILIO_AUTH_TOKEN = "your_twilio_auth_token"
-TWILIO_PHONE = "+1234567890"  # your Twilio phone number
-YOUR_PHONE = "+1987654321"    # your personal phone number
+# Twilio settings (from Render Environment Variables)
+TWILIO_SID = os.getenv("TWILIO_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_PHONE = os.getenv("TWILIO_PHONE")
+YOUR_PHONE = os.getenv("YOUR_PHONE")
 
 
 def send_sms():
@@ -32,7 +33,6 @@ async def check_stock(page):
     await page.wait_for_timeout(3000)  # wait for JS to load
     content = await page.content()
 
-    # Adjust these checks depending on page structure
     if "Add to Cart" in content or "In Stock" in content:
         return True
     return False
